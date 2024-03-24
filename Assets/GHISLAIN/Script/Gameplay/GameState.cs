@@ -12,14 +12,15 @@ public class GameState : MonoBehaviour
     [SerializeField] private GameObject[] _levels;
     [SerializeField] private TextMeshProUGUI _name, _description, _size;
     [SerializeField] private Slider _slider;
-    [SerializeField] private int _progression, _objective;
-
     [SerializeField] private Sprite _defaultHistoSprite, _defaultFlagSprite;
-    public bool IsPlaying, ScrollMode;
-    public float CurrentTime => _currentTime;
-
+    [SerializeField] private int _progression, _objective;
+    
     private GameObject _currentPlayer;
     private int _currentLevel;
+    
+    public bool IsPlaying, ScrollMode, IsLastLevel, IsObjectiveComplete;
+    public float CurrentTime => _currentTime;
+    public int CurrentLevel => _currentLevel;
 
     //Singleton
     public static GameState Instance;
@@ -84,12 +85,15 @@ public class GameState : MonoBehaviour
     {
         Debug.Log("GAME OVER");
         _gameOverMenu.SetActive(true);
+        _gameOverMenu.GetComponent<GameOverMenu>().OnSetActive();
+
     }
 
     public void Victory()
     {
         Debug.Log("VICTORY");
         _victoryMenu.SetActive(true);
+        _victoryMenu.GetComponent<GameOverMenu>().OnSetActive();
     }
 
 
@@ -106,8 +110,16 @@ public class GameState : MonoBehaviour
 
     public void NextLevel()
     {
-        var nextLevel = _currentLevel + 1;
-        SetLevel(nextLevel);
+        _currentLevel += 1;
+        SetLevel(_currentLevel);
+
+        if ((_currentLevel + 1) >= _levels.Length)
+        {
+            Debug.Log("Last level (" + _currentLevel + ")");
+            IsLastLevel = true;
+        }
+
+
     }
 
     public void SetLevel(int level)
@@ -137,8 +149,9 @@ public class GameState : MonoBehaviour
 
         // Tutoriel
 
-        // Unpause
+        // Reset booleans
         IsPlaying = true;
+        IsObjectiveComplete = false;
     }
 
     public void HitWall()
@@ -150,12 +163,15 @@ public class GameState : MonoBehaviour
     {
         // Update progression
         _progression += kyst.size;
+        if (_progression >= _objective)
+        {
+            IsObjectiveComplete = true;
+        }
 
         // Update UI
         _slider.value = _progression;
         _histo.GetComponent<Image>().sprite = kyst.histoSprite;
         _flag.GetComponent<Image>().sprite = kyst.flagSprite;
-
     }
 
     public void DefaultUI()
@@ -163,5 +179,4 @@ public class GameState : MonoBehaviour
         _histo.GetComponent<Image>().sprite = _defaultHistoSprite;
         _flag.GetComponent<Image>().sprite = _defaultFlagSprite;
     }
-
 }

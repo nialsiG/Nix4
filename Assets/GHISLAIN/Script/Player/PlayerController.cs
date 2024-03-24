@@ -87,17 +87,17 @@ public class PlayerController : MonoBehaviour
         else if (_movement < 0 && _beaconList.Count > 1)
         {
             // Move
-            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
+            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position * 2);
 
             for (int i = _beaconList.Count - 1; i > 0; i--)
             {
-                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 30)
+                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 5)
                 {
                     PickUpBeacon(i);
                 }
             }
         }
-        else if (_movement < 0 && _beaconList.Count <= 1 && GameState.Instance.IsObjectiveComplete)
+        else if (_movement < 0 && _beaconList.Count <= 1 && GameState.Instance.IsObjectiveComplete && GameState.Instance.IsPlaying)
         {
             GameState.Instance.Victory();
         }

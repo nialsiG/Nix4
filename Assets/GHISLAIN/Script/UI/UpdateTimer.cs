@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -28,7 +26,6 @@ public class UpdateTimer : MonoBehaviour
             var seconds = _counter % 60;
             var secondsToString = seconds < 10 ? ("0" + seconds).ToString() : seconds.ToString();
             _textMesh.text = (minutes + ":" + secondsToString).ToString();
-        }
-        
+        }        
     }
 }

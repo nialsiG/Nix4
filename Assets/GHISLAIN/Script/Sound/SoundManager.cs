@@ -12,14 +12,14 @@ public class SoundManager : MonoBehaviour
     private float generalVolume;
 
     [Header("Music")]
-    [SerializeField] SOSoundPool[] _music;
     [SerializeField] SOSoundPool _intro;
+    [SerializeField] SOSoundPool _musicChill, _musicStressed, _musicVictory;
     List<AudioSource> musicAudioSource;
     private int musicIntInQueue;
-    private int musicIndex;
 
     [Header("Sound queue")]
     [SerializeField] int _soundQueueLength;
+    [SerializeField] SOSoundPool _fanfare, _defeat;
     List<AudioSource> soundQueue;
     private int currentIntInQueue;
 
@@ -53,9 +53,9 @@ public class SoundManager : MonoBehaviour
         {
             AudioSource source = gameObject.AddComponent<AudioSource>();
             source.volume = _musicVolume * i;
+            source.loop = true;
             musicAudioSource.Add(source);
         }
-        musicIndex = 0;
         musicIntInQueue = 1;
 
         //Set initial volume
@@ -63,15 +63,6 @@ public class SoundManager : MonoBehaviour
 
         //Play theme
         PlayMusic(_intro);
-    }
-
-    private void Update()
-    {
-        if (!musicAudioSource[musicIntInQueue % _music.Length].isPlaying)
-        {
-            ChangeMusic();
-        }
-
     }
 
     public void ChangeVolume()
@@ -108,19 +99,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayMusic(SOSoundPool music)
     {
-        music.PlayMusic(musicAudioSource[musicIntInQueue % _music.Length]);
-    }
-
-    public void ChangeMusic()
-    {
-        //start coroutine fade out
-        StartCoroutine(FadeOut(musicAudioSource[musicIntInQueue % 2]));
-        //change music
-        musicIndex += 1;
-        musicIntInQueue += 1;
-        PlayMusic(_music[musicIndex % _music.Length]);
-        //start coroutine fade in
-        StartCoroutine(FadeIn(musicAudioSource[musicIntInQueue % 2]));
+        music.PlayMusic(musicAudioSource[musicIntInQueue % 2]);
     }
 
     public void ChangeMusic(SOSoundPool music)
@@ -132,13 +111,14 @@ public class SoundManager : MonoBehaviour
         PlayMusic(music);
         //start coroutine fade in
         StartCoroutine(FadeIn(musicAudioSource[musicIntInQueue % 2]));
+        
     }
 
     //Coroutines
     //...for decreasing volume when the music stops
     IEnumerator FadeOut(AudioSource audioSource)
     {
-        for (float v = (_musicVolume * generalVolume); v >= 0f; v -= 0.001f)
+        for (float v = (_musicVolume * generalVolume); v >= 0f; v -= 0.005f)
         {
             audioSource.volume = v;
             yield return null;
@@ -148,7 +128,7 @@ public class SoundManager : MonoBehaviour
     //...for increasing volume when the music starts
     IEnumerator FadeIn(AudioSource audioSource)
     {
-        for (float v = 0f; v <= (_musicVolume * generalVolume); v += 0.001f)
+        for (float v = 0f; v <= (_musicVolume * generalVolume); v += 0.005f)
         {
             audioSource.volume = v;
             yield return null;
@@ -173,5 +153,29 @@ public class SoundManager : MonoBehaviour
     public void PlayIntro()
     {
         ChangeMusic(_intro);
+    }
+
+    public void PlayChill()
+    {
+        ChangeMusic(_musicChill);
+        musicAudioSource[musicIntInQueue % 2].loop = true;
+    }
+
+    public void PlayStress()
+    {
+        ChangeMusic(_musicStressed);
+        musicAudioSource[musicIntInQueue % 2].loop = true;
+    }
+
+    public void PlayVictory()
+    {
+        ChangeMusic(_fanfare);
+        musicAudioSource[musicIntInQueue % 2].loop = false;
+    }
+
+    public void PlayDefeat()
+    {
+        ChangeMusic(_defeat);
+        musicAudioSource[musicIntInQueue % 2].loop = false;
     }
 }

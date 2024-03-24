@@ -235,7 +235,7 @@ MonoBehaviour:
   _mouseSensitivity: 400
   _scrollSpeed: 50
   _arrowSpeed: 5
-  _distanceBetweenBeacons: 0.01
+  _distanceBetweenBeacons: 0.1
   _maxAngle: 10
   _beacon: {fileID: 8024268562251294639, guid: 2bac1ad630eaeef468a52f18de10be90, type: 3}
 --- !u!1 &9064660852951350180

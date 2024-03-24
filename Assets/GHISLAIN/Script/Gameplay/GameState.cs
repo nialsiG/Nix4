@@ -18,7 +18,7 @@ public class GameState : MonoBehaviour
     private GameObject _currentPlayer;
     private int _currentLevel;
     
-    public bool IsPlaying, ScrollMode, IsLastLevel, IsObjectiveComplete;
+    public bool IsPlaying, ScrollMode, IsLastLevel, IsObjectiveComplete, StressMode, CanPause;
     public float CurrentTime => _currentTime;
     public int CurrentLevel => _currentLevel;
 
@@ -37,7 +37,13 @@ public class GameState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Set booleans
         IsPlaying = false;
+        CanPause = false;
+        IsObjectiveComplete = false;
+        StressMode = false;
+        IsLastLevel = false;
+
         _currentLevel = 0;
         _startMenu.SetActive(true);
     }
@@ -52,6 +58,12 @@ public class GameState : MonoBehaviour
 
         _currentTime -= Time.deltaTime;
         
+        if (_currentTime < (_timeLimit / 4) && !StressMode)
+        {
+            SoundManager.Instance.PlayStress();
+            StressMode = true;
+        }
+
         if (_currentTime <= 0)
         {
             GameOver();
@@ -60,15 +72,19 @@ public class GameState : MonoBehaviour
 
     public void StartGame()
     {
-        SoundManager.Instance.ChangeMusic();
+        SoundManager.Instance.PlayChill();
         SetLevel(_currentLevel);
     }
 
-
     public void PauseUnpause()
     {
-        IsPlaying = !IsPlaying;
+        if (!CanPause)
+        {
+            return;
+        }
+
         _pauseMenu.SetActive(!_pauseMenu.activeSelf);
+        IsPlaying = !IsPlaying;
         
         //Baisser / monter le volume
         if (IsPlaying)
@@ -84,16 +100,21 @@ public class GameState : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("GAME OVER");
+        CanPause = false;
+        IsPlaying = false;
         _gameOverMenu.SetActive(true);
         _gameOverMenu.GetComponent<GameOverMenu>().OnSetActive();
-
+        SoundManager.Instance.PlayDefeat();
     }
 
     public void Victory()
     {
         Debug.Log("VICTORY");
+        CanPause = false;
+        IsPlaying = false;
         _victoryMenu.SetActive(true);
         _victoryMenu.GetComponent<GameOverMenu>().OnSetActive();
+        SoundManager.Instance.PlayVictory();
     }
 
 
@@ -106,6 +127,7 @@ public class GameState : MonoBehaviour
     public void ResetLevel()
     {
         SetLevel(_currentLevel);
+        SoundManager.Instance.PlayChill();
     }
 
     public void NextLevel()
@@ -118,8 +140,6 @@ public class GameState : MonoBehaviour
             Debug.Log("Last level (" + _currentLevel + ")");
             IsLastLevel = true;
         }
-
-
     }
 
     public void SetLevel(int level)
@@ -152,11 +172,15 @@ public class GameState : MonoBehaviour
         // Reset booleans
         IsPlaying = true;
         IsObjectiveComplete = false;
+        StressMode = false;
+        CanPause = true;
     }
 
     public void HitWall()
     {
         _currentTime -= _timePenalty;
+
+        // SFX
     }
 
     public void DetectKyst(SOKyst kyst)
@@ -172,6 +196,8 @@ public class GameState : MonoBehaviour
         _slider.value = _progression;
         _histo.GetComponent<Image>().sprite = kyst.histoSprite;
         _flag.GetComponent<Image>().sprite = kyst.flagSprite;
+
+        // SFX
     }
 
     public void DefaultUI()

@@ -97,6 +97,10 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+        else if (_movement < 0 && _beaconList.Count <= 1 && GameState.Instance.IsObjectiveComplete)
+        {
+            GameState.Instance.Victory();
+        }
 
     }
 

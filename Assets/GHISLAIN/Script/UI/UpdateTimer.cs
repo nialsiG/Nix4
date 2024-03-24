@@ -26,7 +26,7 @@ public class UpdateTimer : MonoBehaviour
 
             var minutes = Mathf.FloorToInt(_counter / 60);
             var seconds = _counter % 60;
-            var secondsToString = seconds == 0 ? "00" : seconds.ToString();
+            var secondsToString = seconds < 10 ? ("0" + seconds).ToString() : seconds.ToString();
             _textMesh.text = (minutes + ":" + secondsToString).ToString();
         }
         

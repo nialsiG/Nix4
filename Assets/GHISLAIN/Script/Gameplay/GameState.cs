@@ -3,22 +3,38 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using System;
+using System.Collections.Generic;
+using static GameState;
 
 public class GameState : MonoBehaviour
 {
-    [SerializeField] private float _timeLimit, _currentTime, _timePenalty;
+    [Header("General game design")]
+    [SerializeField] private float _timePenalty;
     [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _startMenu, _victoryMenu, _playerPrefab, _playerSpawn, _histo, _flag;
-
-    [SerializeField] private GameObject[] _levels;
     [SerializeField] private TextMeshProUGUI _name, _description, _size;
     [SerializeField] private Slider _slider;
     [SerializeField] private Sprite _defaultHistoSprite, _defaultFlagSprite;
-    [SerializeField] private int _progression, _objective;
-    
+
+    [Header("Level design")]
+    [SerializeField] private List<Level> _levels;
+    [Serializable] public struct Level
+    {
+        public GameObject _levelEnvironment;
+        public float _timeLimit;
+        public int _objective;
+        [Header("Instructions")]
+        public string _titre;
+        [TextArea] public string _description;
+    }
+
     private GameObject _currentPlayer;
-    private int _currentLevel;
-    
-    public bool IsPlaying, ScrollMode, IsLastLevel, IsObjectiveComplete, StressMode, CanPause;
+    private float _currentTime;
+    private int _currentLevel, _progression;
+
+    [Header("Booleans")]
+    public bool ScrollMode;
+    public bool IsPlaying, IsLastLevel, IsObjectiveComplete, StressMode, CanPause;
     public float CurrentTime => _currentTime;
     public int CurrentLevel => _currentLevel;
 
@@ -44,7 +60,10 @@ public class GameState : MonoBehaviour
         StressMode = false;
         IsLastLevel = false;
 
+        // Set initial level
         _currentLevel = 0;
+
+        // Make sure that the intro menu is active
         _startMenu.SetActive(true);
     }
 
@@ -58,7 +77,7 @@ public class GameState : MonoBehaviour
 
         _currentTime -= Time.deltaTime;
         
-        if (_currentTime < (_timeLimit / 4) && !StressMode)
+        if (_currentTime < (_levels[_currentLevel]._timeLimit / 4) && !StressMode)
         {
             SoundManager.Instance.PlayStress();
             StressMode = true;
@@ -72,7 +91,6 @@ public class GameState : MonoBehaviour
 
     public void StartGame()
     {
-        SoundManager.Instance.PlayChill();
         SetLevel(_currentLevel);
     }
 
@@ -117,17 +135,10 @@ public class GameState : MonoBehaviour
         SoundManager.Instance.PlayVictory();
     }
 
-
     public void ResetGame()
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
-    }
-
-    public void ResetLevel()
-    {
-        SetLevel(_currentLevel);
-        SoundManager.Instance.PlayChill();
     }
 
     public void NextLevel()
@@ -135,7 +146,7 @@ public class GameState : MonoBehaviour
         _currentLevel += 1;
         SetLevel(_currentLevel);
 
-        if ((_currentLevel + 1) >= _levels.Length)
+        if ((_currentLevel + 1) >= _levels.Count)
         {
             Debug.Log("Last level (" + _currentLevel + ")");
             IsLastLevel = true;
@@ -144,36 +155,44 @@ public class GameState : MonoBehaviour
 
     public void SetLevel(int level)
     {
-        // Level
-        foreach (GameObject l in _levels)
+        // Change level
+        foreach (Level l in _levels)
         {
-            if (l.activeSelf)
+            if (l._levelEnvironment.activeSelf)
             {
-                l.SetActive(false);
+                l._levelEnvironment.SetActive(false);
             }
         }
 
-        _levels[level].SetActive(true);
+        _levels[level]._levelEnvironment.SetActive(true);
 
         // Player
         Destroy(_currentPlayer);
         _currentPlayer = Instantiate(_playerPrefab, _playerSpawn.transform);
 
         // Update UI
-        _currentTime = _timeLimit;
+        _currentTime = _levels[level]._timeLimit;
         _progression = 0;
         _slider.minValue = 0;
         _slider.value = _progression;
-        _slider.maxValue = _objective;
+        _slider.maxValue = _levels[level]._objective;
         DefaultUI();
 
         // Tutoriel
+        Instructions instruction = GetComponent<Instructions>();
+        if (instruction != null)
+        {
+            instruction.UpdateInstructions(_levels[_currentLevel]._titre, _levels[_currentLevel]._description);
+        }
 
         // Reset booleans
         IsPlaying = true;
         IsObjectiveComplete = false;
         StressMode = false;
         CanPause = true;
+
+        //Music
+        SoundManager.Instance.PlayChill();
     }
 
     public void HitWall()
@@ -187,7 +206,7 @@ public class GameState : MonoBehaviour
     {
         // Update progression
         _progression += kyst.size;
-        if (_progression >= _objective)
+        if (_progression >= _levels[_currentLevel]._objective)
         {
             IsObjectiveComplete = true;
         }

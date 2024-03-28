@@ -6,12 +6,13 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using static GameState;
+using Unity.VisualScripting;
 
 public class GameState : MonoBehaviour
 {
     [Header("General game design")]
     [SerializeField] private float _timePenalty;
-    [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _startMenu, _victoryMenu, _playerPrefab, _playerSpawn, _histo, _flag;
+    [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _startMenu, _victoryMenu, _playerPrefab, _playerSpawn, _histo, _flag, _hitLayer;
     [SerializeField] private TextMeshProUGUI _name, _description, _size;
     [SerializeField] private Slider _slider;
     [SerializeField] private Sprite _defaultHistoSprite, _defaultFlagSprite;
@@ -38,6 +39,8 @@ public class GameState : MonoBehaviour
     public float CurrentTime => _currentTime;
     public int CurrentLevel => _currentLevel;
 
+    private List<Kyst> _kysts;
+
     //Singleton
     public static GameState Instance;
 
@@ -62,6 +65,7 @@ public class GameState : MonoBehaviour
 
         // Set initial level
         _currentLevel = 0;
+        _kysts = new List<Kyst>();
 
         // Make sure that the intro menu is active
         _startMenu.SetActive(true);
@@ -178,6 +182,14 @@ public class GameState : MonoBehaviour
         _slider.maxValue = _levels[level]._objective;
         DefaultUI();
 
+        //Reset kysts
+        for (int i = (_kysts.Count - 1); i >= 0; i--)
+        {
+            _kysts[i].KystHide();
+            _kysts[i].gameObject.layer = LayerMask.NameToLayer("Kysts");
+            _kysts.RemoveAt(i);
+        }
+
         // Tutoriel
         Instructions instruction = GetComponent<Instructions>();
         if (instruction != null)
@@ -200,7 +212,11 @@ public class GameState : MonoBehaviour
         Debug.Log("Hit wall");
         _currentTime -= _timePenalty;
 
+        // VFX
+        _hitLayer.GetComponent<Animator>().SetTrigger("Active");
+
         // SFX
+        SoundManager.Instance.PlayHitWall();
     }
 
     public void DetectKyst(SOKyst kyst)
@@ -218,10 +234,16 @@ public class GameState : MonoBehaviour
 
         // Update UI
         _slider.value = _progression;
+        _flag.GetComponent<Image>().sprite = kyst.visibleSprite;
         _histo.GetComponent<Image>().sprite = kyst.histoSprite;
-        _flag.GetComponent<Image>().sprite = kyst.flagSprite;
 
         // SFX
+    }
+
+    public void AddKystToList(Kyst kyst)
+    {
+        kyst.gameObject.layer = LayerMask.NameToLayer("Default");
+        _kysts.Add(kyst);
     }
 
     public void DefaultUI()

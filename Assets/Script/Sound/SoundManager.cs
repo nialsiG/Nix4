@@ -19,7 +19,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Sound queue")]
     [SerializeField] int _soundQueueLength;
-    [SerializeField] SOSoundPool _fanfare, _defeat;
+    [SerializeField] SOSoundPool _fanfare, _defeat, _hitWall;
     List<AudioSource> soundQueue;
     private int currentIntInQueue;
 
@@ -183,5 +183,10 @@ public class SoundManager : MonoBehaviour
     {
         ChangeMusic(_defeat);
         musicAudioSource[musicIntInQueue % 2].loop = false;
+    }
+
+    public void PlayHitWall()
+    {
+        PlaySound(_hitWall);
     }
 }

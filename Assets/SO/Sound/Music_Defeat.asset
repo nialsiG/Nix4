@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd3bfd7ac1d7e234384a1a26b5cfae3a, type: 3}
-  m_Name: Sound_Defeat
+  m_Name: Music_Defeat
   m_EditorClassIdentifier: 
   _sounds:
   - {fileID: 8300000, guid: 85ee1aec6c829ca458f45ee25f5fce67, type: 3}

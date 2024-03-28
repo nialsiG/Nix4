@@ -22,6 +22,7 @@ public class Kyst : MonoBehaviour
             if (!_isRevealed)
             {
                 GameState.Instance.DetectKyst(SOKyst);
+                GameState.Instance.AddKystToList(this);
             }
         }
     }
@@ -45,6 +46,12 @@ public class Kyst : MonoBehaviour
         var color = gameObject.GetComponent<SpriteRenderer>().color; 
         color = Color.clear;
         StartCoroutine(FadeIn(color));
+    }
+
+    public void KystHide()
+    {
+        DefineSprite(SOKyst.hiddenSprite);
+        _isRevealed = false;
     }
 
     IEnumerator FadeIn(Color color)

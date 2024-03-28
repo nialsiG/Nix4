@@ -15,7 +15,7 @@ MonoBehaviour:
   visibleSprite: {fileID: -349418489784788634, guid: 05d89c3d2b01b2d479f806c7ff4faa00, type: 3}
   hiddenSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
   histoSprite: {fileID: 21300000, guid: 7c9431d17f123f64583f6a12d1bd3a2f, type: 3}
-  flagSprite: {fileID: 21300000, guid: 8418834d6a8f6cf45ba8928dfb415f8f, type: 3}
+  flagSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
   kystName: "Kyste b\xE9nin"
   kystDescription: ...une petite description
   size: 1

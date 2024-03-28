@@ -15,7 +15,7 @@ MonoBehaviour:
   visibleSprite: {fileID: 21300000, guid: b7868ccd0fd695a41a86d07708cb8be7, type: 3}
   hiddenSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
   histoSprite: {fileID: 21300000, guid: c76c4ee94c555b04bbd93175c5e6e788, type: 3}
-  flagSprite: {fileID: 21300000, guid: 8418834d6a8f6cf45ba8928dfb415f8f, type: 3}
+  flagSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
   kystName: Maladie A
   kystDescription: ...une petite description
   size: 1

@@ -76,6 +76,10 @@ public class PlayerController : MonoBehaviour
         // Move
         if (_movement > 0 && _canMoveForward)
         {
+            // Reset rigidbody to allow collision
+            GetComponent<Rigidbody>().isKinematic = false;
+            
+            // Move
             GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
 
             // Drop a new beacon
@@ -86,16 +90,16 @@ public class PlayerController : MonoBehaviour
         }
         else if (_movement < 0 && _beaconList.Count > 1)
         {
-            // Reset rigidbody
+            // Reset rigidbody to avoid collision / reactivate forward
             _canMoveForward = true;
-            GetComponent<Rigidbody>().isKinematic = false;
+            GetComponent<Rigidbody>().isKinematic = true;
 
             // Move
             GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position * 2);
 
             for (int i = _beaconList.Count - 1; i > 0; i--)
             {
-                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 5)
+                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 3)
                 {
                     PickUpBeacon(i);
                 }
@@ -136,7 +140,6 @@ public class PlayerController : MonoBehaviour
         {
             GameState.Instance.HitWall();
             _canMoveForward = false;
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
             GetComponent<Rigidbody>().isKinematic = true;
         }
     }

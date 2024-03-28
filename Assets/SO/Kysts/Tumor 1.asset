@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531fc4d561e0acb4780f28e06ce94c6b, type: 3}
   m_Name: Tumor 1
   m_EditorClassIdentifier: 
-  visibleSprite: {fileID: 21300000, guid: e10a34556c1b4834d86222db257fa86b, type: 3}
+  visibleSprite: {fileID: 21300000, guid: b7868ccd0fd695a41a86d07708cb8be7, type: 3}
   hiddenSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
   histoSprite: {fileID: 21300000, guid: c76c4ee94c555b04bbd93175c5e6e788, type: 3}
   flagSprite: {fileID: 21300000, guid: 8418834d6a8f6cf45ba8928dfb415f8f, type: 3}

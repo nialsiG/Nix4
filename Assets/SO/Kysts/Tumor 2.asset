@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 531fc4d561e0acb4780f28e06ce94c6b, type: 3}
-  m_Name: Kyst 1
+  m_Name: Tumor 2
   m_EditorClassIdentifier: 
-  visibleSprite: {fileID: -349418489784788634, guid: 05d89c3d2b01b2d479f806c7ff4faa00, type: 3}
+  visibleSprite: {fileID: 21300000, guid: 349b9e6ba9869614c9dabce965212a3c, type: 3}
   hiddenSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
-  histoSprite: {fileID: 21300000, guid: 63a493a72372bf841a8db2839cba9d35, type: 3}
+  histoSprite: {fileID: 21300000, guid: c76c4ee94c555b04bbd93175c5e6e788, type: 3}
   flagSprite: {fileID: 21300000, guid: 44c5b4c8c505b8247bd09537bdf8e15f, type: 3}
-  kystName: "Kyste b\xE9nin"
+  kystName: Maladie B
   kystDescription: ...une petite description
   size: 1
-  isTumor: 0
+  isTumor: 1
   _prefab: {fileID: 8654400726543334317, guid: 85c08919985a6804aaca17daf5017c22, type: 3}

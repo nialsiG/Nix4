@@ -34,6 +34,7 @@ public class GameState : MonoBehaviour
     private int _currentLevel, _progression;
 
     [Header("Booleans")]
+    public Toggle _toggle;
     public bool ScrollMode;
     public bool IsPlaying, IsLastLevel, IsObjectiveComplete, StressMode, CanPause;
     public float CurrentTime => _currentTime;
@@ -250,5 +251,10 @@ public class GameState : MonoBehaviour
     {
         _histo.GetComponent<Image>().sprite = _defaultHistoSprite;
         _flag.GetComponent<Image>().sprite = _defaultFlagSprite;
+    }
+
+    public void ToggleScrollMode()
+    {
+        ScrollMode = _toggle.isOn;
     }
 }

@@ -95,11 +95,11 @@ public class PlayerController : MonoBehaviour
             GetComponent<Rigidbody>().isKinematic = true;
 
             // Move
-            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position * 2);
+            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
 
             for (int i = _beaconList.Count - 1; i > 0; i--)
             {
-                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 3)
+                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 4)
                 {
                     PickUpBeacon(i);
                 }

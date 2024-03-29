@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mouseSensitivity: 400
-  _scrollSpeed: 50
+  _scrollSpeed: 100
   _arrowSpeed: 5
   _distanceBetweenBeacons: 0.1
   _maxAngle: 10

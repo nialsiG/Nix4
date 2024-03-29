@@ -21,6 +21,7 @@ public class Kyst : MonoBehaviour
             KystReveal();
             if (!_isRevealed)
             {
+                _isRevealed = true;
                 GameState.Instance.DetectKyst(SOKyst);
                 GameState.Instance.AddKystToList(this);
             }

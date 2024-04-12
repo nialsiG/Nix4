@@ -22,7 +22,11 @@ public class Kyst : MonoBehaviour
         }
         else
         {
-            gameObject.transform.LookAt(Vector3.forward, Vector3.up);
+            if(gameObject.transform.rotation != Quaternion.Euler(-90, 0, 180))
+            {
+                gameObject.transform.rotation = new Quaternion();
+                gameObject.transform.rotation = Quaternion.Euler(-90, 0, 180);
+            }
         }
     }
 

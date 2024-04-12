@@ -1,16 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float _mouseSensitivity, _scrollSpeed, _arrowSpeed, _distanceBetweenBeacons, _maxAngle;
     [SerializeField] private GameObject _beacon;
+    public Camera Cam3D;
+
+
 
     private List<GameObject> _beaconList = new List<GameObject>();
+
 
     private float _angle, _movement, _angleAtPreviousBeacon;
     private bool _canMoveForward = true;
@@ -20,6 +21,8 @@ public class PlayerController : MonoBehaviour
         // Drop the first beacon
         DropBeacon();
         
+        // Camera
+        Cam3D.enabled = false;
     }
 
     // Update is called once per frame
@@ -50,6 +53,7 @@ public class PlayerController : MonoBehaviour
         {
             _movement = Input.GetAxis("Vertical");
         }
+
     }
 
     private void FixedUpdate()
@@ -78,9 +82,17 @@ public class PlayerController : MonoBehaviour
         {
             // Reset rigidbody to allow collision
             GetComponent<Rigidbody>().isKinematic = false;
-            
+
             // Move
-            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
+            if (!GameState.Instance.ScrollMode)
+            {
+                GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
+            }
+            else
+            {
+                GetComponent<Rigidbody>().MovePosition(Vector3.Lerp(transform.position, transform.position + transform.forward * position, 0.1f));
+            }
+
 
             // Drop a new beacon
             if ((transform.position - _beaconList.Last().transform.position).magnitude > _distanceBetweenBeacons)
@@ -95,11 +107,18 @@ public class PlayerController : MonoBehaviour
             GetComponent<Rigidbody>().isKinematic = true;
 
             // Move
-            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
+            if (!GameState.Instance.ScrollMode)
+            {
+                GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * position);
+            }
+            else
+            {
+                GetComponent<Rigidbody>().MovePosition(Vector3.Lerp(transform.position, transform.position + transform.forward * position, 0.1f));
+            }
 
             for (int i = _beaconList.Count - 1; i > 0; i--)
             {
-                if ((transform.position - _beaconList[i].transform.position).magnitude < _distanceBetweenBeacons * 4)
+                if ((transform.position - _beaconList[i].transform.position).magnitude < (_distanceBetweenBeacons * 1.5f))
                 {
                     PickUpBeacon(i);
                 }

@@ -14,6 +14,18 @@ public class Kyst : MonoBehaviour
         DefineSprite(SOKyst.hiddenSprite);
     }
 
+    private void LateUpdate()
+    {
+        if (!GameState.Instance.Cam2D.isActiveAndEnabled)
+        {
+            gameObject.transform.LookAt(GameState.Instance.CurrentPlayer.transform.position, Vector3.up);
+        }
+        else
+        {
+            gameObject.transform.LookAt(Vector3.forward, Vector3.up);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")

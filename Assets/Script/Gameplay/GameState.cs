@@ -1,18 +1,16 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-using static GameState;
-using Unity.VisualScripting;
 
 public class GameState : MonoBehaviour
 {
     [Header("General game design")]
     [SerializeField] private float _timePenalty;
-    [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _startMenu, _victoryMenu, _playerPrefab, _playerSpawn, _histo, _flag, _hitLayer;
+    [SerializeField] private GameObject _pauseMenu, _gameOverMenu, _startMenu, _victoryMenu, _playerPrefab, _playerSpawn, _histo, _flag, _hitLayer, _getEndoscopeOutText
+        ;
     [SerializeField] private TextMeshProUGUI _name, _description, _size;
     [SerializeField] private Slider _slider;
     [SerializeField] private Sprite _defaultHistoSprite, _defaultFlagSprite;
@@ -29,6 +27,7 @@ public class GameState : MonoBehaviour
         [TextArea] public string _description;
     }
 
+    public Camera Cam2D;
     private GameObject _currentPlayer;
     private float _currentTime;
     private int _currentLevel, _progression;
@@ -39,6 +38,8 @@ public class GameState : MonoBehaviour
     public bool IsPlaying, IsLastLevel, IsObjectiveComplete, StressMode, CanPause;
     public float CurrentTime => _currentTime;
     public int CurrentLevel => _currentLevel;
+
+    public GameObject CurrentPlayer => _currentPlayer;
 
     private List<Kyst> _kysts;
 
@@ -75,6 +76,14 @@ public class GameState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Cam2D.enabled = !Cam2D.enabled;
+            var cam3D = _currentPlayer.GetComponent<PlayerController>().Cam3D;
+            cam3D.enabled = !cam3D.enabled;
+        }
+
+        // Gameplay
         if (!IsPlaying)
         {
             return;
@@ -181,6 +190,7 @@ public class GameState : MonoBehaviour
         _slider.minValue = 0;
         _slider.value = _progression;
         _slider.maxValue = _levels[level]._objective;
+        _getEndoscopeOutText.SetActive(false);
         DefaultUI();
 
         //Reset kysts
@@ -206,6 +216,9 @@ public class GameState : MonoBehaviour
 
         //Music
         SoundManager.Instance.PlayChill();
+
+        // Cameras
+        Cam2D.enabled = true;
     }
 
     public void HitWall()
@@ -231,6 +244,7 @@ public class GameState : MonoBehaviour
         if (_progression >= _levels[_currentLevel]._objective)
         {
             IsObjectiveComplete = true;
+            _getEndoscopeOutText.SetActive(true);
         }
 
         // Update UI

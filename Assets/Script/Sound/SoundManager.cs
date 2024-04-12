@@ -122,7 +122,7 @@ public class SoundManager : MonoBehaviour
         {
             audioSource.volume = v;
             
-            if (audioSource.volume <= 0.001f)
+            if (audioSource.volume <= 0f)
             {
                 audioSource.Stop();
             }
